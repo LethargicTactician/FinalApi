@@ -34,6 +34,10 @@ services:
       - "3054:5000"
     networks:
       joedaddy:
+    depends_on:
+      - database
+    links:
+      - database
 
   bookapi2:
     container_name: bookapi2
@@ -42,6 +46,10 @@ services:
       - "3055:5000"
     networks:
       joedaddy:
+    depends_on:
+      - database
+    links:
+      - database
 
   # EMAIL SERVICE
   emailthnig: 
@@ -71,25 +79,25 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
     ports:
-      - '3406:3306'
+      - '3306:3306'
     volumes:
       - ./database-service/script:/docker-entrypoint-initdb.d
     networks:
       joedaddy:
 
-  prometheus:
-    image: prom/prometheus
-    ports: 
-      - 9069:9090
-    depends_on: 
-      - bookapi1
-      - bookapi2
-      - broker
-    volumes:
-      - ./prometheus:/etc/prometheus
-      - prometheus-data:/prometheus
-volumes:
-  prometheus-data: 
+#   prometheus:
+#     image: prom/prometheus
+#     ports: 
+#       - 9069:9090
+#     depends_on: 
+#       - bookapi1
+#       - bookapi2
+#       - broker
+#     volumes:
+#       - ./prometheus:/etc/prometheus
+#       - prometheus-data:/prometheus
+# volumes:
+#   prometheus-data: 
 
 networks:
   joedaddy:
