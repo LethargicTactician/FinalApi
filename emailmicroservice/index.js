@@ -24,7 +24,6 @@ async function main() {
 
     switch (key) {
       case "userCreated":
-        // send mail with defined transport object
         let info = await transporter.sendMail({
           from: `"Mr Bean" <${request.body.email}>`, // sender address
           to: "bar@example.com, baz@example.com", // list of receivers
@@ -40,8 +39,7 @@ async function main() {
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
 
-        case "bookCreated":
-        // send mail with defined transport object
+      case "bookCreated":
         let booksCreated = await transporter.sendMail({
           from: `"Mr Bean" <bkah>`, // sender address
           to: "bar@example.com, baz@example.com", // list of receivers
@@ -55,22 +53,38 @@ async function main() {
         // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(booksCreated));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-        break;
+      break;
 
-        case "booksObtained":
-        // send mail with defined transport object
+      case "booksObtained":
         let booksObtained = await transporter.sendMail({
           from: `"Mr Bean" <bar@example.com>`, // sender address
           to: "bar@example.com, baz@example.com", // list of receivers
           subject: "user created " + key, // Subject line
           text: "User " + data + " has been created", // plain text body
           html: `<b>User ${data} has been created</b>`, // html body
-        });
+      });
 
         console.log("Message sent: %s", booksObtained.messageId);
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
         // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(booksObtained));
+        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+      break;
+
+      case "bookDeleted":
+        // send mail with defined transport object
+        let bookDeleted = await transporter.sendMail({
+          from: `"THE DELETOR" <deletusthefetus@example.com>`, // sender address
+          to: "bar@example.com, baz@example.com", // list of receivers
+          subject: "book deleted " + key, // Subject line
+          text: "book " + data + " has been deleted", // plain text body
+          html: `<b>book ${data} has been deleted</b>`, // html body
+        });
+
+        console.log("Message sent: %s", bookDeleted.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(bookDeleted));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
 

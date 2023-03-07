@@ -1,12 +1,13 @@
 const database = require("../../../database");
 const kafka = require("../../../../bookapi/streams/kafka");
+const { json } = require("express");
 //var connection = database.cre
 
 module.exports = function () {
     var operations = {
         GET,
         POST,
-        // DELETE
+        DELETE
     }
 
     async function GET(req, res, next) {
@@ -26,25 +27,22 @@ module.exports = function () {
             if(err) throw(err);
             console.log(results);
         });
-        const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
-        res.status(200).json({message: "successful post"})
+        const successful = kafka.produceTestMessage("books", "booksCreated", "A list of books");
+        res.status(200).json({message: "successful post"});
 
     };
 
-    // function DELETE(req, res, next){
-    //     database.query(`DELETE FROM users WHERE username = ${req.body.username}`, function(err, results){
-    //         if(err) throw(err);
-    //         console.log(results);
-    //     });
+    async function DELETE(req, res, next){
+        database.query(`DELETE FROM users WHERE username="${req.body.username}"`, function(err, results){
+            if(err) throw(err);
+            console.log(results);
+        });
+        const successful = kafka.produceTestMessage("books", "bookDeleted", "A list of books");
+        res.status(200).json({message: "Deleted successfully"});
 
-    // };
+    };
 
-    // function PUT(req, res, next){
-    //     database.query(`UPDATE `, function(err, results){
-    //         if(err) throw(err);
-    //         console.log(results);
-    //     });
-    // }
+
 
     //API DOC STUFF
     GET.apiDoc = {
@@ -97,7 +95,7 @@ module.exports = function () {
 
     POST.apiDoc = {
         summary: "posts a the user",
-        description: "adds a  user on ypour thing",
+        description: "adds a  user on your thing",
         operationId: "post-users",
         responses: {
             200: {
@@ -143,53 +141,53 @@ module.exports = function () {
         },
     };
 
-    // DELETE.apiDoc = {
-    //     summary: "deletes the user",
-    //     description: "deltes user",
-    //     operationId: "delete-users",
-    //     responses: {
-    //         200: {
-    //             description: "OK",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         $ref: "#/components/schemas/users",
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         400: {
-    //             description: "Bad Request",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         type: "object",
-    //                         properties: {
-    //                             message: {
-    //                                 type: "string",
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         500: {
-    //             description: "Internal Server Error",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         type: "object",
-    //                         properties: {
-    //                             message: {
-    //                                 type: "string",
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     },
-    // };
+    DELETE.apiDoc = {
+        summary: "deletes the user",
+        description: "deltes user",
+        operationId: "delete-users",
+        responses: {
+            200: {
+                description: "OK",
+                content: {
+                    "application/json": {
+                        schema: {
+                            $ref: "#/components/schemas/users",
+                        },
+                    },
+                },
+            },
+            400: {
+                description: "Bad Request",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            500: {
+                description: "Internal Server Error",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    };
 
 
     return operations;
