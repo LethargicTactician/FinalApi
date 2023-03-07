@@ -9,17 +9,17 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({
-    groupId: "mail-consumer",
+    groupId: "mail-consumer"
 }); //function that makes producer and takes in config
 
 async function startConsumer(handler) {
     await consumer.connect();
     await consumer.subscribe({
-        topics: ["books","users"],
+        topics: ["books","users"]
     }); //array of what topics you want to sub to
     consumer.run({
         eachMessage: async ({ topic, partition, message, heartbeat, pause }) =>
-            handler(message),
+            handler(message)
     });
     return consumer;
 }

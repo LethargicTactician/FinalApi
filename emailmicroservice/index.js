@@ -11,6 +11,8 @@ async function main() {
   // Only needed if you don't have a real mail account for testing
   let testAccount = await nodemailer.createTestAccount();
 
+  // booksObtained
+
   startConsumer(handleEvent)
 
   async function handleEvent(eventMessage) {
@@ -37,6 +39,42 @@ async function main() {
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
+
+        case "bookCreated":
+        // send mail with defined transport object
+        let booksCreated = await transporter.sendMail({
+          from: `"Mr Bean" <bkah>`, // sender address
+          to: "bar@example.com, baz@example.com", // list of receivers
+          subject: "user created " + key, // Subject line
+          text: "User " + data + " has been created", // plain text body
+          html: `<b>User ${data} has been created</b>`, // html body
+        });
+
+        console.log("Message sent: %s", booksCreated.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(booksCreated));
+        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+        break;
+
+        case "booksObtained":
+        // send mail with defined transport object
+        let booksObtained = await transporter.sendMail({
+          from: `"Mr Bean" <bar@example.com>`, // sender address
+          to: "bar@example.com, baz@example.com", // list of receivers
+          subject: "user created " + key, // Subject line
+          text: "User " + data + " has been created", // plain text body
+          html: `<b>User ${data} has been created</b>`, // html body
+        });
+
+        console.log("Message sent: %s", booksObtained.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(booksObtained));
+        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+        break;
+
+
     }
 
   }

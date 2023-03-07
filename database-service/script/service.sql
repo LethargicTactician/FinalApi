@@ -18,3 +18,5 @@ CREATE TABLE books
     title      varchar(128),
     desciption varchar(128)
 );
+
+-- INSERT INTO users(username, email, password) VALUES('testing', 'testing email', 'test test');
