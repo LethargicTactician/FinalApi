@@ -5,20 +5,16 @@ const mysql = require('mysql');
 //const bodyParser = require('body-parser');
 //const path = require('path');
 
-const database = mysql.createConnection({
-    host:'database',
-    user: 'admin',
-    password: 'password',
-    database: 'bookapi_db',
-    port: 3000
+const connection = mysql.createConnection({
+    host: "database",
+    user: "root",
+    password: "password",
+    database: "bookapi_db",
 });
 
 
-
-database.connect(function(err){
-    if(err){
-        return console.error('error:' + err.message);
-    }
-    console.log('Connected to MySQL server!');
+connection.connect(function (error) {
+    if (error) return console.error("Database Error: ", error.message);
+    console.log("Successfully connected to the MySQL server");
 });
-module.exports = database;
+module.exports = connection;
