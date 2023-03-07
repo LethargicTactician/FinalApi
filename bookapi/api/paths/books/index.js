@@ -11,19 +11,20 @@ module.exports = function(){
     ]
 
     async function GET(req,res, next){
-        try{
-            console.log("Endpoint 'GET' reached");
-            database.query(`SELECT * FROM books`, function(err, results){
-                if(err) throw(err);
-                console.log(results);
+        res.status(200).json({message: "successful book"})
+        // try{
+        //     console.log("Endpoint 'GET' reached");
+        //     database.query(`SELECT * FROM books`, function(err, results){
+        //         if(err) throw(err);
+        //         console.log(results);
         
-            });
-            const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
-            res.status(200);
+        //     });
+        //     const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
+        //     res.status(200);
 
-        } catch (err){
-            next(err);
-        }
+        // } catch (err){
+        //     next(err);
+        // }
        
     };
 
