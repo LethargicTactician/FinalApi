@@ -1,14 +1,11 @@
 "use strict";
 const nodemailer = require("nodemailer");
 const emailmicroservice = require("/emailmicroservice/index.js");
-//const { request } = require("../bookapi/app.js");
-// const games = require("../testretro/api/paths/games");
 const startConsumer = require("./streams/kafka")
+
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main() {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
   let testAccount = await nodemailer.createTestAccount();
 
   // booksObtained
@@ -25,20 +22,20 @@ async function main() {
     switch (key) {
       case "userCreated":
         let info = await transporter.sendMail({
-          from: `"Mr Bean" <${request.body.email}>`, // sender address
+          from: `"Mr Bean" <HAHHHAHA@email.com>`, // sender address
           to: "bar@example.com, baz@example.com", // list of receivers
           subject: "user created " + key, // Subject line
           text: "User " + data + " has been created", // plain text body
           html: `<b>User ${data} has been created</b>`, // html body
         });
 
-        case "userObtained":
+      case "userObtained":
         let userObtained = await transporter.sendMail({
           from: `"Mr Bean" <bar@example.com>`, // sender address
           to: "bar@example.com, baz@example.com", // list of receivers
           subject: "user created " + key, // Subject line
-          text: "User " + data + " has been retreated", // plain text body
-          html: `<b>User ${data} has been retreated</b>`, // html body
+          text: "Users: \n" + data + "\n have been retreived", // plain text body
+          html: `<b>User ${data} has been retreived</b>`, // html body
       });
 
         console.log("Message sent: %s", userObtained.messageId);
@@ -46,13 +43,30 @@ async function main() {
         // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userObtained));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    break;
+
+      case "userDeleted":
+      // send mail with defined transport object
+      let userDeleted = await transporter.sendMail({
+        from: `"THE DELETOR" <deletusthefetus@example.com>`, // sender address
+        to: "bar@example.com, baz@example.com", // list of receivers
+        subject: "book deleted " + key, // Subject line
+        text: "book " + data + " has been deleted", // plain text body
+        html: `<b>book ${data} has been deleted</b>`, // html body
+      });
+
+      console.log("Message sent: %s", userDeleted.messageId);
+      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+      // Preview only available when sending through an Ethereal account
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userDeleted));
+      //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
       break;
 
 
-        console.log("Message sent: %s", info.messageId);
+        console.log("Message sent: %s", userObtained.messageId);
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
         // Preview only available when sending through an Ethereal account
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        console.log("Message URL: %s", nodemailer.getTestMessageUrl(userObtained));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
 
@@ -104,10 +118,7 @@ async function main() {
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(bookDeleted));
         //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
-
-
     }
-
   }
 
   // create reusable transporter object using the default SMTP transport

@@ -17,11 +17,10 @@ module.exports = function () {
             if(err) throw(err);
             console.log(results);
            // res.status(200).json({message: results});
-    
-        });
+           const successful = kafka.produceTestMessage("books", "userObtained", "list of men");
 
-        const successful = kafka.produceTestMessage("books", "userObtained", "A list of users");
-        res.status(200).json({message: "Sucessful"})
+        });       
+        res.status(200).json({message: "HI"})
 
     };
 
@@ -42,12 +41,10 @@ module.exports = function () {
             console.log(results);
             res.status(200).json({message: results});
         });
-        const successful = kafka.produceTestMessage("books", "bookDeleted", "A list of books");
+        const successful = kafka.produceTestMessage("users", "userDeleted", "A list of books");
         res.status(200).json({message: "hi"});
 
     };
-
-
 
     //API DOC STUFF
     GET.apiDoc = {
@@ -131,7 +128,7 @@ module.exports = function () {
             500: {
                 description: "Internal Server Error",
                 content: {
-                    "application/json": {
+                    "application/json": {    
                         schema: {
                             type: "object",
                             properties: {
