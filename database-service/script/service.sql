@@ -6,7 +6,7 @@ USE bookapi_db;
 
 CREATE TABLE users
 (
-    id       int,
+    id       int PRIMARY KEY AUTO_INCREMENT,
     username varchar(128),
     email    varchar(128),
     password varchar(128)
@@ -14,7 +14,7 @@ CREATE TABLE users
 
 CREATE TABLE books
 (
-    book_id    int,
+    book_id    int PRIMARY KEY AUTO_INCREMENT,
     title      varchar(128),
     desciption varchar(128)
 );

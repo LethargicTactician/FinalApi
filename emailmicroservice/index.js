@@ -32,6 +32,23 @@ async function main() {
           html: `<b>User ${data} has been created</b>`, // html body
         });
 
+        case "userObtained":
+        let userObtained = await transporter.sendMail({
+          from: `"Mr Bean" <bar@example.com>`, // sender address
+          to: "bar@example.com, baz@example.com", // list of receivers
+          subject: "user created " + key, // Subject line
+          text: "User " + data + " has been retreated", // plain text body
+          html: `<b>User ${data} has been retreated</b>`, // html body
+      });
+
+        console.log("Message sent: %s", userObtained.messageId);
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+        // Preview only available when sending through an Ethereal account
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userObtained));
+        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+      break;
+
+
         console.log("Message sent: %s", info.messageId);
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
         // Preview only available when sending through an Ethereal account

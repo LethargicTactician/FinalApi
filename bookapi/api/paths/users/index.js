@@ -1,6 +1,7 @@
 const database = require("../../../database");
 const kafka = require("../../../../bookapi/streams/kafka");
 const { json } = require("express");
+const bodyParser = require("body-parser");
 //var connection = database.cre
 
 module.exports = function () {
@@ -11,24 +12,26 @@ module.exports = function () {
     }
 
     async function GET(req, res, next) {
-        
-        database.query(`SELECT * FROM books`, function(err, results){
+        database.query(`SELECT * FROM users`, function(err, results){
+            
             if(err) throw(err);
             console.log(results);
     
         });
-        const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
-        res.status(200).json({message: "successful bitch"})
+
+        const successful = kafka.produceTestMessage("books", "userObtained", "A list of users");
+        res.status(200).json({message: "Sucessful"})
 
     };
 
     async function POST(req, res, next){
-        database.query(`INSERT INTO users(username, email, password) VALUES("${req.body.username}","${req.body.email}", "${req.body.password}")`, function(err, results){
+        database.query(`INSERT INTO users(username, email, password) VALUES("${req.body.username}","${req.body.email}", "${req.body.password}");`, function(err, results){
             if(err) throw(err);
             console.log(results);
         });
+       
         const successful = kafka.produceTestMessage("books", "booksCreated", "A list of books");
-        res.status(200).json({message: "successful post"});
+        res.status(200).json({message: "results"});
 
     };
 
@@ -38,7 +41,7 @@ module.exports = function () {
             console.log(results);
         });
         const successful = kafka.produceTestMessage("books", "bookDeleted", "A list of books");
-        res.status(200).json({message: "Deleted successfully"});
+        res.status(200).json({message: "Deleted"});
 
     };
 
