@@ -16,6 +16,7 @@ module.exports = function () {
             
             if(err) throw(err);
             console.log(results);
+           // res.status(200).json({message: results});
     
         });
 
@@ -39,9 +40,10 @@ module.exports = function () {
         database.query(`DELETE FROM users WHERE username="${req.body.username}"`, function(err, results){
             if(err) throw(err);
             console.log(results);
+            res.status(200).json({message: results});
         });
         const successful = kafka.produceTestMessage("books", "bookDeleted", "A list of books");
-        res.status(200).json({message: "Deleted"});
+        res.status(200).json({message: "hi"});
 
     };
 
