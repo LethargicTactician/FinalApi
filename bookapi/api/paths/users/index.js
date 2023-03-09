@@ -16,34 +16,40 @@ module.exports = function () {
             
             if(err) throw(err);
             console.log(results);
-           // res.status(200).json({message: results});
-           const successful = kafka.produceTestMessage("users", "userObtained", JSON.stringify(results));
+            //res.status(200).json({message: "HI"});
+           const successful = kafka.produceTestMessage("users", "userObtained", req.body);
 
+           res.status(200).json({message: results})
         });       
-        res.status(200).json({message: "HI"})
+       
 
     };
 
     async function POST(req, res, next){
-        database.query(`INSERT INTO users(username, email, password) VALUES("${req.body.username}","${req.body.email}", "${req.body.password}");`, function(err, results){
-            if(err) throw(err);
-            console.log(results);
-            const successful = kafka.produceTestMessage("books", "booksCreated", JSON.stringify(results));
-        });
-       
+        try{
+            database.query(`INSERT INTO users(username, email, password) VALUES("${req.body.username}","${req.body.email}", "${req.body.password}");`, function(err, results){
+                if(err) throw(err);
+                console.log(results);
+                //let postParams = JSON.stringify(req.body)
+                const successful = kafka.produceTestMessage("users", "userCreated", req.body );
+    
+             
+            });
      
+        } catch(err){
+            console.error("FAILURE: " + err )
+        }
         res.status(200).json({message: "successful"});
-
     };
 
     async function DELETE(req, res, next){
         database.query(`DELETE FROM users WHERE username="${req.body.username}"`, function(err, results){
             if(err) throw(err);
             console.log(results);
-            res.status(200).json({message: results});
+            //res.status(200).json({message: "Bye"});
         });
-        const successful = kafka.produceTestMessage("users", "userDeleted", "A list of books");
-        res.status(200).json({message: "hi"});
+        //const successful = kafka.produceTestMessage("users", "userDeleted", "A list of books");
+        res.status(200).json({message: "bye :("});
 
     };
 

@@ -6,7 +6,7 @@ const router = express.Router();
 module.exports = function(){
     var operations = {    
         GET,
-        // POST,
+        POST,
         // DELETE
 
     }
@@ -18,28 +18,32 @@ module.exports = function(){
             console.log(results);
     
         });
-        const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
+        //const successful = kafka.produceTestMessage("books", "booksObtained", "A list of books");
         res.status(200).json({message: "successful book"})
 
     };
 
 
+    async function POST(req, res, next){
+        try{
+            database.query(`INSERT INTO books(title, desciption) VALUES("${req.body.title}","${req.body.desciption}");`, function(err, results){
+                if(err) throw(err);
+                console.log(results);
+                //let postParams = JSON.stringify(req.body)
+                const successful = kafka.produceTestMessage("books", "bookCreated", req.body );
+    
+             
+            });
+     
+        } catch(err){
+            console.error("FAILURE: " + err )
+        }
+    
+       
+     
+        res.status(200).json({message: "successful"});
 
-    // function POST(req, res, next){
-    //     database.query(`INSERT INTO books(title, description) VALUES("${req.body.title}","${req.body.description}")`, function(err, results){
-    //         if(err) throw(err);
-    //         console.log(results);
-    //     });
-        
-    // };
-
-    // function DELETE(req, res, next){
-    //     database.query(`DELETE FROM books WHERE title = ${req.body.title}`, function(err, results){
-    //         if(err) throw(err);
-    //         console.log(results);
-    //     });
-        
-    // };
+    };
 
     //API DOC STUFF
     GET.apiDoc = {
@@ -90,53 +94,53 @@ module.exports = function(){
         },
     };
 
-    // POST.apiDoc = {
-    //     summary: "Gets a the book",
-    //     description: "Retrieves all the book that are stored database",
-    //     operationId: "get-books",
-    //     responses: {
-    //         201: {
-    //             description: "OK",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         $ref: "#/components/schemas/books",
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         400: {
-    //             description: "Bad Request",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         type: "object",
-    //                         properties: {
-    //                             message: {
-    //                                 type: "string",
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //         500: {
-    //             description: "Internal Server Error",
-    //             content: {
-    //                 "application/json": {
-    //                     schema: {
-    //                         type: "object",
-    //                         properties: {
-    //                             message: {
-    //                                 type: "string",
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     },
-    // };
+    POST.apiDoc = {
+        summary: "Gets a the book",
+        description: "Retrieves all the book that are stored database",
+        operationId: "get-books",
+        responses: {
+            201: {
+                description: "OK",
+                content: {
+                    "application/json": {
+                        schema: {
+                            $ref: "#/components/schemas/books",
+                        },
+                    },
+                },
+            },
+            400: {
+                description: "Bad Request",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            500: {
+                description: "Internal Server Error",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                message: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    };
 
     // DELETE.apiDoc = {
     //     summary: "deletes the book",
