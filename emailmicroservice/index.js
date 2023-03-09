@@ -2,14 +2,14 @@
 const nodemailer = require("nodemailer");
 const emailmicroservice = require("/emailmicroservice/index.js");
 const startConsumer = require("./streams/kafka")
+const database = require("./database");
+
+
 
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main() {
   let testAccount = await nodemailer.createTestAccount();
-
-  // booksObtained
-
   startConsumer(handleEvent)
 
   async function handleEvent(eventMessage) {
@@ -19,55 +19,52 @@ async function main() {
     console.log(`KEY: ${key}`);
     console.log(`DATA: ${eventMessage.value.toString()}`);
 
+
+    var parseData = JSON.parse(data);
     switch (key) {
       case "userCreated":
         let info = await transporter.sendMail({
-          from: `"Mr Bean" <HAHHHAHA@email.com>`, // sender address
-          to: "bar@example.com, baz@example.com", // list of receivers
-          subject: "user created " + key, // Subject line
-          text: "User " + data + " has been created", // plain text body
-          html: `<b>User ${data} has been created</b>`, // html body
+          from: `Your favorite bookstore <bookdaddy@booking.org>`, 
+          to: "hihi", 
+          subject: key, 
+          text: data + " has been created", 
+          html: `<b> ${data} has been created</b>`, 
         });
 
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    break;
+
+
       case "userObtained":
+        //database.query(`SELECT FROM users where username=${} and email=${} `, function(err, results){});
+
         let userObtained = await transporter.sendMail({
-          from: `"Mr Bean" <bar@example.com>`, // sender address
-          to: "bar@example.com, baz@example.com", // list of receivers
-          subject: "user created " + key, // Subject line
-          text: "Users: \n" + data + "\n have been retreived", // plain text body
-          html: `<b>User ${data} has been retreived</b>`, // html body
-      });
+          from: "Your favorite bookstore <bookdaddy@booking.org>",
+          to: `${JSON.stringify(parseData[0])}`, 
+          subject: key, 
+          text: data + " has been created",
+          html: `<b> ${data} has been created</b>`, 
+        });
 
         console.log("Message sent: %s", userObtained.messageId);
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-        // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userObtained));
-        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
     break;
 
       case "userDeleted":
-      // send mail with defined transport object
-      let userDeleted = await transporter.sendMail({
-        from: `"THE DELETOR" <deletusthefetus@example.com>`, // sender address
-        to: "bar@example.com, baz@example.com", // list of receivers
-        subject: "book deleted " + key, // Subject line
-        text: "book " + data + " has been deleted", // plain text body
-        html: `<b>book ${data} has been deleted</b>`, // html body
-      });
+          let userDeleted = await transporter.sendMail({
+            from: `"THE DELETOR" <deletusthefetus@example.com>`, // sender address
+            to: "bar@example.com, baz@example.com", // list of receivers
+            subject: "book deleted " + key, // Subject line
+            text: "book " + data + " has been deleted", // plain text body
+            html: `<b>book ${data} has been deleted</b>`, // html body
+          });
 
-      console.log("Message sent: %s", userDeleted.messageId);
-      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-      // Preview only available when sending through an Ethereal account
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userDeleted));
-      //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-      break;
-
-
-        console.log("Message sent: %s", userObtained.messageId);
-        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-        // Preview only available when sending through an Ethereal account
-        console.log("Message URL: %s", nodemailer.getTestMessageUrl(userObtained));
-        //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+          console.log("Message sent: %s", userDeleted.messageId);
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+          // Preview only available when sending through an Ethereal account
+          console.log("Preview URL: %s", nodemailer.getTestMessageUrl(userDeleted));
+          //Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         break;
 
       case "bookCreated":

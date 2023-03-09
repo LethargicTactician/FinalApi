@@ -17,7 +17,7 @@ module.exports = function () {
             if(err) throw(err);
             console.log(results);
            // res.status(200).json({message: results});
-           const successful = kafka.produceTestMessage("books", "userObtained", "list of men");
+           const successful = kafka.produceTestMessage("users", "userObtained", JSON.stringify(results));
 
         });       
         res.status(200).json({message: "HI"})
@@ -28,10 +28,11 @@ module.exports = function () {
         database.query(`INSERT INTO users(username, email, password) VALUES("${req.body.username}","${req.body.email}", "${req.body.password}");`, function(err, results){
             if(err) throw(err);
             console.log(results);
+            const successful = kafka.produceTestMessage("books", "booksCreated", JSON.stringify(results));
         });
        
-        const successful = kafka.produceTestMessage("books", "booksCreated", "A list of books");
-        res.status(200).json({message: "results"});
+     
+        res.status(200).json({message: "successful"});
 
     };
 
